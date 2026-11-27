@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Downloads - GeoPortal Recursos Hídricos PB</title>
+
+  <!-- Mantém o estilo principal do seu GeoPortal -->
+  <link rel="stylesheet" href="css/main.css">
+
+  <!-- Estilos específicos para os cards de download -->
+  <style>
+    .downloads-wrapper {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    .downloads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .download-card {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-badge {
+      display: inline-block;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      width: fit-content;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      margin: 0 0 8px 0;
+      color: #1e293b;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: #475569;
+      line-height: 1.4;
+      margin: 0 0 15px 0;
+      flex-grow: 1;
+    }
+
+    .card-meta {
+      font-size: 0.8rem;
+      color: #64748b;
+      background: #f8fafc;
+      padding: 8px 10px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px 14px;
+      background-color: #0284c7;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .btn-download:hover {
+      background-color: #0369a1;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar">
+    <a href="index.html">Mapa Interativo</a> ||
+    <a href="galeria.html">Galeria</a> ||
+    <a href="downloads.html" class="active">Downloads</a>
+  </div>
+
+  <hr>
+
+  <div class="downloads-wrapper">
+    <h1>GeoPortal - Download de Bases Cartográficas</h1>
+    <p>Baixe as camadas geográficas do projeto em formato original JavaScript (.js / GeoJSON).</p>
+
+    <!-- Os cards serão gerados automaticamente aqui -->
+    <div id="lista-downloads" class="downloads-grid"></div>
+  </div>
+
+  <!-- Camadas GeoJSON em variáveis JS (mesma estrutura do seu index.html) -->
+  <script src="C:\Users\sagak\OneDrive\Desktop\GEOPORTAL\geoportalhellen\dados\acudesh.js"></script>
+  <script src="C:\Users\sagak\OneDrive\Desktop\GEOPORTAL\geoportalhellen\dados\bacias_hidro.js"></script>
+  <script src="C:\Users\sagak\OneDrive\Desktop\GEOPORTAL\geoportalhellen\dados\adutoras.js"></script>
+
+  <script>
+    // Lista de camadas disponíveis para download
+    // Quando adicionar novos arquivos na pasta js/, basta incluir um novo bloco aqui
+    const listaCamadas = [
+      {
+        titulo: "Bacias Hidrográficas",
+        descricao: "Delimitação das bacias hidrográficas do estado da Paraíba.",
+        nomeArquivo: "bacias_hidro.js",
+        caminho: "js/bacias_hidro.js",
+        variavelGlobal: "json_bacias_hidro" // Ajuste se o nome da var dentro do arquivo for diferente
+      },
+      {
+        titulo: "Sistemas Adutores",
+        descricao: "Traçado das adutoras e sistemas de abastecimento hídrico.",
+        nomeArquivo: "adutoras.js",
+        caminho: "js/adutoras.js",
+        variavelGlobal: "json_adutoras" // Ajuste se o nome da var dentro do arquivo for diferente
+      },
+      {
+        titulo: "Açudes da Paraíba (AESA)",
+        descricao: "Perímetros, nomes e bacias hidrográficas dos açudes monitorados na Paraíba.",
+        nomeArquivo: "acudesh_2.js",
+        caminho: "js/acudesh_2.js",
+        variavelGlobal: "json_acudesh_2"
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("lista-downloads");
+
+      listaCamadas.forEach((camada) => {
+        let infoRegistros = "Formato JavaScript (.js)";
+        
+        // Verifica se a variável existe para exibir a contagem automática de feições
+        if (camada.variavelGlobal && typeof window[camada.variavelGlobal] !== "undefined") {
+          const dados = window[camada.variavelGlobal];
+          if (dados && Array.isArray(dados.features)) {
+            infoRegistros = `${dados.features.length} feições • Arquivo .JS`;
+          }
+        }
+
+        const card = document.createElement("div");
+        card.className = "download-card";
+
+        card.innerHTML = `
+          <div>
+            <span class="card-badge">JS / GeoJSON</span>
+            <h3 class="card-title">${camada.titulo}</h3>
+            <p class="card-desc">${camada.descricao}</p>
+          </div>
+          <div>
+            <div class="card-meta">
+              <strong>Arquivo:</strong> ${camada.nomeArquivo}<br>
+              <span>${infoRegistros}</span>
+            </div>
+            <a href="${camada.caminho}" download="${camada.nomeArquivo}" class="btn-download">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              Baixar Arquivo
+            </a>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GeoPortal - Recursos Hídricos PB</title>
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+	<div id="navbar">
+		<a href="index.html" class="active">Mapa Interativo</a> ||
+		<a href="galeria.html">Galeria</a> ||
+		<a href="downloads.html">Downloads</a>
+	</div>
+
+	<hr>
+
+	<header class="page-header">
+		<h1>GeoPortal - Recursos Hídricos da Paraíba</h1>
+		<p>Visualização interativa das Bacias Hidrográficas, Açudes, Drenagem, Municípios e Sistemas Adutores.</p>
+	</header>
+
+	<div class="map-workspace">
+
+		<!-- PAINEL LATERAL ESQUERDO (EXTERNO AO MAPA): LEGENDA + ATIVAÇÃO + TRANSPARÊNCIA -->
+		<aside id="sidebar-controls" class="sidebar-panel">
+			<div class="panel-header">
+				<div class="panel-header-top">
+					<h3>Legenda e Camadas</h3>
+					<button type="button" id="btn-toggle-all" class="btn-toggle-all">Desmarcar Todas</button>
+				</div>
+				<small>Ative/desative cada camada e ajuste sua opacidade</small>
+			</div>
+
+			<div id="layer-controls-list" class="controls-list">
+
+				<!-- Camada 1: Açudes -->
+				<div class="layer-card active" id="card-acudes">
+					<div class="layer-card-header">
+						<input type="checkbox" id="chk-acudes" checked>
+						<span class="legend-symbol-box" style="background: rgba(5, 112, 176, 0.75); border: 1.5px solid #045a8d;"></span>
+						<label for="chk-acudes" class="layer-title">Açudes / Reservatórios</label>
+					</div>
+					<div class="opacity-control">
+						<label for="rng-acudes">Opacidade:</label>
+						<input type="range" id="rng-acudes" min="0" max="100" value="100">
+						<span class="opacity-value" id="val-acudes">100%</span>
+					</div>
+				</div>
+
+				<!-- Camada 2: Sistemas Adutores -->
+				<div class="layer-card active" id="card-adutoras">
+					<div class="layer-card-header">
+						<input type="checkbox" id="chk-adutoras" checked>
+						<span class="legend-symbol-line" style="border-top: 3px dashed #e31a1c;"></span>
+						<label for="chk-adutoras" class="layer-title">Sistemas Adutores</label>
+					</div>
+					<div class="opacity-control">
+						<label for="rng-adutoras">Opacidade:</label>
+						<input type="range" id="rng-adutoras" min="0" max="100" value="100">
+						<span class="opacity-value" id="val-adutoras">100%</span>
+					</div>
+				</div>
+
+				<!-- Camada 3: Rede de Drenagem -->
+				<div class="layer-card active" id="card-drenagem">
+					<div class="layer-card-header">
+						<input type="checkbox" id="chk-drenagem" checked>
+						<span class="legend-symbol-line" style="border-top: 2.5px solid #3690c0;"></span>
+						<label for="chk-drenagem" class="layer-title">Rede de Drenagem</label>
+					</div>
+					<div class="opacity-control">
+						<label for="rng-drenagem">Opacidade:</label>
+						<input type="range" id="rng-drenagem" min="0" max="100" value="100">
+						<span class="opacity-value" id="val-drenagem">100%</span>
+					</div>
+				</div>
+
+				<!-- Camada 4: Bacias Hidrográficas -->
+				<div class="layer-card active" id="card-bacias">
+					<div class="layer-card-header">
+						<input type="checkbox" id="chk-bacias" checked>
+						<span class="legend-symbol-box" style="background: rgba(123, 204, 196, 0.45); border: 2px solid #2b8cbe;"></span>
+						<label for="chk-bacias" class="layer-title">Bacias Hidrográficas</label>
+					</div>
+					<div class="opacity-control">
+						<label for="rng-bacias">Opacidade:</label>
+						<input type="range" id="rng-bacias" min="0" max="100" value="100">
+						<span class="opacity-value" id="val-bacias">100%</span>
+					</div>
+				</div>
+
+				<!-- Camada 5: Limites Municipais -->
+				<div class="layer-card active" id="card-municipios">
+					<div class="layer-card-header">
+						<input type="checkbox" id="chk-municipios" checked>
+						<span class="legend-symbol-box" style="background: rgba(204, 204, 204, 0.30); border: 1.5px solid #555555;"></span>
+						<label for="chk-municipios" class="layer-title">Limites Municipais</label>
+					</div>
+					<div class="opacity-control">
+						<label for="rng-municipios">Opacidade:</label>
+						<input type="range" id="rng-municipios" min="0" max="100" value="100">
+						<span class="opacity-value" id="val-municipios">100%</span>
+					</div>
+				</div>
+
+			</div>
+		</aside>
+
+		<!-- ÁREA DO MAPA -->
+		<main class="map-container">
+			<div id="map"></div>
+		</main>
+
+	</div>
+
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+    <!-- Camadas GeoJSON -->
+    <script src="js/limites_municipais.js"></script>
+    <script src="js/bacias_hidro.js"></script>
+    <script src="js/drenagem.js"></script>
+    <script src="js/acudesh_3.js"></script>
+    <script src="js/adutoras.js"></script>
+
+    <!-- Lógica Principal do Mapa -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>
